@@ -10,6 +10,21 @@ def clear():
         _ = system('clear')
 
 
+def print_list_in_sections(list, length=10):
+    for x in range(len(list)):
+        if x%length != 0 or x == 0:
+            print(f"{x} - {list[x]}")
+        elif x%length == 0 and x != 0:
+            print(f"{x} - {list[x]}")
+            cont = input("\nPress \'q\' to stop...\nPress any other key to continue...\n")
+            if cont.lower() == 'q':
+                break
+            else:
+                continue
+        else:
+            print(f"Error with following index: {x}")
+
+
 def wiki_search():
     selection = ""
     while selection.lower() != 'q':
@@ -31,8 +46,8 @@ def wiki_search():
             clear()
             wiki_page = wikipedia.page(search_results[int(selection)])
             print(wiki_page.title)
-            for x in range(len(wiki_page.sections)):
-                print(f"{x} - {wiki_page.sections[x]}")
+            print_list_in_sections(wiki_page.sections, 10)
+
 
             print("What section of the page would you like to view?\nEnter \'S\' for summary\n")
             section_choice = input("Input: ")
@@ -43,6 +58,7 @@ def wiki_search():
             else:
                 try:
                     wiki_output = wiki_page.section(wiki_page.sections[int(section_choice)].replace(" ","_"))
+                    print(wiki_page.sections[int(section_choice)].replace(" ","_"))
                     print(wiki_output)
                 except:
                     print("Something went way wrong!\n")
@@ -64,18 +80,7 @@ def get_links(page):
     links = page.links
     formatted_links = [x.replace(' ','_').replace('\'','%27') for x in links]
     print("Page Links:\n")
-    for x in range(len(formatted_links)):
-        if x%10 != 0 or x == 0:
-            print(f"{x} - {formatted_links[x]}")
-        elif x%10 == 0 and x != 0:
-            print(f"{x} - {formatted_links[x]}")
-            cont = input("\nPress \'q\' to stop...\nPress any other key to continue...\n")
-            if cont.lower() == 'q':
-                break
-            else:
-                continue
-        else:
-            print(x)
+    print_list_in_sections(formatted_links, 10)
 
     print()
     #TODO: only spit out x number of links at a time and allow user to scroll through them manually
@@ -103,7 +108,5 @@ if __name__ == '__main__':
 
         search_results, selection = wiki_search()
     #   print(search_results, selection)
-
-
 
 # print(wikipedia.search(search_term))
