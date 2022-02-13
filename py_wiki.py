@@ -56,12 +56,15 @@ def wiki_search():
                 wiki_output = wikipedia.summary(search_results[int(selection)])
                 print(wiki_output)
             else:
-                try:
-                    wiki_output = wiki_page.section(wiki_page.sections[int(section_choice)].replace(" ","_"))
-                    print(wiki_page.sections[int(section_choice)].replace(" ","_"))
-                    print(wiki_output)
-                except:
-                    print("Something went way wrong!\n")
+                # try:
+                #     wiki_output = wiki_page.section(wiki_page.sections[int(section_choice)].replace(" ","_"))
+                #     print(wiki_page.sections[int(section_choice)].replace(" ","_"))
+                #     print(wiki_output)
+                # except:
+                #     print("Something went way wrong!\n")
+                wiki_output = wiki_page.section(wiki_page.sections[int(section_choice)].replace(" ","_"))
+                print(wiki_page.sections[int(section_choice)].replace(" ","_"))
+                print(wiki_output)
 
             #print(summary)
             action = input("\nPress \'C\' to copy to clipboard\nPress \'L\' to view links\nPress any other key to continue...\nInput: ")

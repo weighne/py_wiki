@@ -1,0 +1,71 @@
+{
+    "batchcomplete": "",
+    "continue": {
+        "gsroffset": 10,
+        "continue": "gsroffset||"
+    },
+    "query": {
+        "pages": {
+            "161804": {
+                "pageid": 161804,
+                "ns": 0,
+                "title": "Africanized bee",
+                "index": 5
+            },
+            "4654": {
+                "pageid": 4654,
+                "ns": 0,
+                "title": "Bee",
+                "index": 1
+            },
+            "322091": {
+                "pageid": 322091,
+                "ns": 0,
+                "title": "Beekeeping",
+                "index": 8
+            },
+            "58261": {
+                "pageid": 58261,
+                "ns": 0,
+                "title": "Honey bee",
+                "index": 2
+            },
+            "379029": {
+                "pageid": 379029,
+                "ns": 0,
+                "title": "Queen bee",
+                "index": 10
+            },
+            "2557067": {
+                "pageid": 2557067,
+                "ns": 0,
+                "title": "Stingless bee",
+                "index": 3
+            },
+            "54948113": {
+                "pageid": 54948113,
+                "ns": 0,
+                "title": "Tell It to the Bees",
+                "index": 6
+            },
+            "248990": {
+                "pageid": 248990,
+                "ns": 0,
+                "title": "The Hee Bee Gee Bees",
+                "index": 4
+            },
+            "4889379": {
+                "pageid": 4889379,
+                "ns": 0,
+                "title": "The birds and the bees",
+                "index": 9
+            },
+            "18214141": {
+                "pageid": 18214141,
+                "ns": 0,
+                "title": "Western honey bee",
+                "index": 7
+            }
+        }
+    }
+}
