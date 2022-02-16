@@ -7,36 +7,39 @@ base_url = "https://en.wikipedia.org/w/api.php?action=query&titles={}&format=jso
 page_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&page={}&prop=wikitext&formatversion=2"
 search_url = "https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit={}&gsrsearch='{}'"
 
-# https://en.wikipedia.org/w/api.php?action=parse&format=json&page=Pet_door&prop=text&formatversion=2
-test_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&page=Pet_door&prop=wikitext&formatversion=2"
 
-search = input("Whatchu want?\n")
+def wiki_search(term, limit=10):  # take user search term and return list of possible results, then take user input to get specific page
+    search_url = "https://en.wikipedia.org/w/api.php?action=query&origin=*&format=json&generator=search&gsrnamespace=0&gsrlimit={}&gsrsearch='{}'"
+    page_url = "https://en.wikipedia.org/w/api.php?action=parse&format=json&page={}&prop=wikitext&formatversion=2"
+    search = requests.get(search_url.format(int(limit), term))
 
-page = requests.get(search_url.format(10, search))  # search for page based on input
+    y=0
+    results = []
+    for x in search.json()["query"]["pages"]:  # list results and append to array for selection
+        print(f"{y} -", search.json()["query"]["pages"][x]["title"])
+        results.append(search.json()["query"]["pages"][x]["title"])
+        y+=1
 
-with open("wiki_dump.json","w") as out_file:
-    json.dump(page.json(), out_file, indent=4)
+    selection = input("Select result from list: ")
 
-y=0
-results = []
-for x in page.json()["query"]["pages"]:  # list results and append to array for selection
-    print(f"{y} -", page.json()["query"]["pages"][x]["title"])
-    results.append(page.json()["query"]["pages"][x]["title"])
-    y+=1
+    user_selection = requests.get(page_url.format(results[int(selection)].replace(" ","_")))
 
-user_choice = input("Whitchu want?\n")
+    return user_selection
 
-print(results[int(user_choice)])
 
-page2 = requests.get(page_url.format(results[int(user_choice)].replace(" ","_")))  # get specific page
-# page2 = requests.get(test_url)
-print(type(page2))
-# print(page.json())
-with open("text_dump.json","w") as out_file2:
-    json.dump(page2.json(), out_file2, indent=4)
+def wiki_plain(page):  # parse wiki_text from page
+    parsed_text = wtp.parse(page.json()["parse"]["wikitext"])
 
-parsed_text = wtp.parse(page2.json()["parse"]["wikitext"])  # parse wikitext so that it's actually readable
-print(parsed_text)
+    return parsed_text
 
-with open("page_dump.txt","w") as out_file:
-    out_file.write(str(parsed_text))
+
+def get_sections(page):
+    print("uhhhhh....")
+    # TODO: Gotta look for section headers and then collect all the text between the two section headers.
+
+
+if __name__ == "__main__":
+    search_term = input("Enter your search term: ")
+
+    wiki_page = wiki_search(search_term, 10)
+    page_content = wiki_plain(wiki_page)
