@@ -20,11 +20,14 @@ def wiki_search(term, limit=10):  # take user search term and return list of pos
         results.append(search.json()["query"]["pages"][x]["title"])
         y+=1
 
-    selection = input("Select result from list: ")
+    # selection = input("Select result from list: ")
+    selection = 9  # testing
 
-    user_selection = requests.get(page_url.format(results[int(selection)].replace(" ","_")))
+    current_page = results[int(selection)].replace(" ","_")
 
-    return user_selection
+    # user_selection = requests.get(page_url.format(current_page))
+
+    return current_page
 
 
 def wiki_plain(page):  # parse wiki_text from page
@@ -34,12 +37,29 @@ def wiki_plain(page):  # parse wiki_text from page
 
 
 def get_sections(page):
-    print("uhhhhh....")
-    # TODO: Gotta look for section headers and then collect all the text between the two section headers.
+    print(page)
+    section_url = "https://en.wikipedia.org/w/api.php?action=parse&page={}&prop=sections&format=json"
+    print(section_url.format(page))
+    sections = requests.get(section_url.format(page))
+
+    with open("wiki_sections.json","w") as out_file:
+        json.dump(sections.json(), out_file, indent=4)
+
+    return sections
 
 
 if __name__ == "__main__":
-    search_term = input("Enter your search term: ")
+    # search_term = input("Enter your search term: ")
+    search_term = "Spanish Inquisition"  # testing
 
-    wiki_page = wiki_search(search_term, 10)
+    page_title = wiki_search(search_term, 10)
+    print(page_title)
+    wiki_page = requests.get(page_url.format(page_title))
+    print(wiki_page)
     page_content = wiki_plain(wiki_page)
+    print(page_content)
+    wiki_sections = get_sections(page_title)
+    print(wiki_sections.json())
+
+    for x in wiki_sections.json()["parse"]["sections"]:
+        print(x["anchor"])
