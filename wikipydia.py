@@ -65,8 +65,8 @@ def sections_choice(sections,z):
 
     formatted_url = section_url.format(sections.json()["parse"]["title"].replace(" ","_"),user_choice)
     section_get = requests.get(formatted_url)
-    with open(f"section_dump-{z}.json","w") as out_file:
-        json.dump(section_get.json(), out_file, indent=4)
+    # with open(f"section_dump-{z}.json","w") as out_file:
+    #     json.dump(section_get.json(), out_file, indent=4)
     # print(formatted_url)
     return section_get.json()
 
@@ -78,7 +78,44 @@ def parse_text(section):
     # TODO: use regex to find special strings [[]] / {{}} and then handle them accordingly
     plain_text = []
     skip=0
-    for x in section.split(" "):
+
+    garbage_text = re.split('([^a-zA-Z0-9\s])', section)
+    #clean up the easy stuff in the garbage text (null characters and trailing whitespace)
+    garbage_text = [x for x in garbage_text if x.strip()]
+
+    less_garbage_text = []  # array for the good stuff
+    prev_char = ''  # variable for tracking what we're working with
+    for x in range(len(garbage_text)):
+        # print(prev_char)
+        if x == 0:  # not much to compare the first character against, so we make note of it, and move on
+            prev_char = garbage_text[x]
+            less_garbage_text.append(garbage_text[x])
+            continue
+        else:
+            prev_char = garbage_text[x-1]  # now we have a real previous character to work with
+
+            if garbage_text[x] == prev_char:  # if the current and previous character match...
+                curr_char = garbage_text[x]
+                if len(less_garbage_text) >= 1:
+                    less_garbage_text.pop(len(less_garbage_text)-1)  # remove any garbage from the clean array
+
+                less_garbage_text.append(f"{prev_char}{curr_char}")  # append nice combined string to new array
+            else:  # if there is no match...
+                less_garbage_text.append(garbage_text[x])  # dump the current character into the new array
+                continue  # keep moving
+
+    print("This is supposed to be garbage")
+    print()
+    print(garbage_text)
+    print()
+    print()
+    print("This is supposed to be less garbage")
+    print()
+    print(less_garbage_text)
+    print()
+    print()
+
+    for x in re.split('([^a-zA-Z0-9\s])', section):
         if x in special_chars:
             if x == "<ref>":
                 skip=1
@@ -90,12 +127,13 @@ def parse_text(section):
                 continue
         elif x not in special_chars and skip != 1:
             plain_text.append(x)
+    # print(plain_text)
 
 
 if __name__ == "__main__":
     # search_term = input("Enter your search term: ")
     z=0
-    while z<=20:
+    while z!=1:
         search_term = "Bees"  # testing
 
         page_title = wiki_search(search_term, 10)
@@ -107,4 +145,5 @@ if __name__ == "__main__":
         wiki_sections = get_sections(page_title)
         # print(wiki_sections.json())
         print(sections_choice(wiki_sections,z))
+        parse_text(sections_choice(wiki_sections,z)["parse"]["wikitext"])
         z+=1
