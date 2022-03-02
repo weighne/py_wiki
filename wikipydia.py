@@ -21,8 +21,8 @@ def wiki_search(term, limit=10):  # take user search term and return list of pos
         results.append(search.json()["query"]["pages"][x]["title"])
         y+=1
 
-    # selection = input("Select result from list: ")
-    selection = random.randint(1,9)  # testing
+    selection = input("Select result from list: ")
+    # selection = random.randint(1,9)  # testing
 
     current_page = results[int(selection)].replace(" ","_")
 
@@ -61,7 +61,8 @@ def sections_choice(sections,z):
         y+=1
 
     # user_choice = input("Select section from list: ")
-    user_choice = random.randint(1,len(sections.json()["parse"]["sections"]))  # testing
+    # user_choice = random.randint(1,len(sections.json()["parse"]["sections"]))  # testing
+    user_choice = 30
 
     formatted_url = section_url.format(sections.json()["parse"]["title"].replace(" ","_"),user_choice)
     section_get = requests.get(formatted_url)
@@ -114,6 +115,45 @@ def parse_text(section):
     print(less_garbage_text)
     print()
     print()
+    with open("less_garbage.txt","w") as outfile:
+        for x in less_garbage_text:
+            outfile.write(x)
+
+    x = 0
+    skip=0
+    temp=[]
+    print(len(less_garbage_text))
+    while x <= len(less_garbage_text):
+        try:
+            print(x)
+            if "{{" in less_garbage_text[x]:
+                skip=1
+                while skip==1:
+                    if "}}" in less_garbage_text[x]:
+                        temp.append(less_garbage_text[x])
+                        x+=1
+                        skip=0
+                    else:
+                        temp.append(less_garbage_text[x])
+                        x+=1
+                # Do some stuff...
+            elif "<ref>" in less_garbage_text[x]:
+                skip=1
+                while skip==1:
+                    if "</ref>" in less_garbage_text[x]:
+                        temp.append(less_garbage_text[x])
+                        x+=1
+                        skip=0
+                    else:
+                        temp.append(less_garbage_text[x])
+                        x+=1
+
+            x+=1
+        except IndexError:
+            break
+    print(temp)
+
+
 
     for x in re.split('([^a-zA-Z0-9\s])', section):
         if x in special_chars:
