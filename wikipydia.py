@@ -71,7 +71,9 @@ def sections_choice(sections,z):
     # print(formatted_url)
     return section_get.json()
 
-
+# eveything between <> regex: (?<=<).*(?=>)
+# This just grabs one: <(.*)\/>
+# grabs <ref name = > garbage: <(ref.*?)>
 def parse_text(section):
     special_chars = ['\n','<ref>','</ref>','{{','}}','[[',']]','','','','']
     ref_string = "<ref>(.*?)</ref>"  # regex for reference string
@@ -122,36 +124,64 @@ def parse_text(section):
     x = 0
     skip=0
     temp=[]
-    print(len(less_garbage_text))
-    while x <= len(less_garbage_text):
-        try:
-            print(x)
-            if "{{" in less_garbage_text[x]:
-                skip=1
-                while skip==1:
-                    if "}}" in less_garbage_text[x]:
-                        temp.append(less_garbage_text[x])
-                        x+=1
-                        skip=0
-                    else:
-                        temp.append(less_garbage_text[x])
-                        x+=1
-                # Do some stuff...
-            elif "<ref>" in less_garbage_text[x]:
-                skip=1
-                while skip==1:
-                    if "</ref>" in less_garbage_text[x]:
-                        temp.append(less_garbage_text[x])
-                        x+=1
-                        skip=0
-                    else:
-                        temp.append(less_garbage_text[x])
-                        x+=1
+    # slightly_less_garbage_text =[]
+    regex_pattern = r'<ref(\S*?)[^>]*>.*?</\1ref>|<.*?/>'
+    slightly_less_garbage_text = re.sub(regex_pattern, '', ''.join(less_garbage_text), count=0)
 
-            x+=1
-        except IndexError:
-            break
-    print(temp)
+    # This shit down here vvv does that ^^^ but waaaaaay worse... I'm holding on to it to remind myself that I should be using regex more
+
+    # while x <= len(less_garbage_text):
+    #     try:
+    #         print(x)
+    #         if "{{" in less_garbage_text[x]:
+    #             skip=1
+    #             while skip==1:
+    #                 if "}}" in less_garbage_text[x]:
+    #                     temp.append(less_garbage_text[x])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=1
+    #                     skip=0
+    #                 else:
+    #                     temp.append(less_garbage_text[x])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=1
+    #             # Do some stuff...
+    #         elif "ref" in less_garbage_text[x] and less_garbage_text[x+1] == ">":
+    #             slightly_less_garbage_text.pop(x-1)
+    #             skip=1
+    #             while skip==1:
+    #                 if "ref" in less_garbage_text[x] and less_garbage_text[x-1] == "/":
+    #                     temp.append(less_garbage_text[x])
+    #                     temp.append(less_garbage_text[x+1])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=2
+    #                     skip=0
+    #                 else:
+    #                     temp.append(less_garbage_text[x])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=1
+    #         elif "ref name" in less_garbage_text[x] and less_garbage_text[x-1] == "<":
+    #             skip=1
+    #             while skip==1:
+    #                 if less_garbage_text[x] == ">":
+    #                     temp.append(less_garbage_text[x])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=1
+    #                     skip=0
+    #                 else:
+    #                     temp.append(less_garbage_text[x])
+    #                     #less_garbage_text.pop(x)
+    #                     x+=1
+    #
+    #         else:
+    #             slightly_less_garbage_text.append(less_garbage_text[x])
+    #             x+=1
+    #     except IndexError:
+    #         break
+    # print(temp)
+    print(''.join(less_garbage_text))
+    print()
+    print(''.join(slightly_less_garbage_text))
 
 
 
